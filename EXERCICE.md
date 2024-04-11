@@ -15,7 +15,7 @@ Si vous rencontrez des lenteurs, prenez le temps de les analyser et de les corri
 Aide qui peut être utile:
 - [Il est possible d'utiliser le symfony profiler avec une commande](https://symfony.com/doc/current/console.html#profiling-commands)
 - Pour accéder au profiler: [http://localhost/_profiler](http://localhost/_profiler) (adapter l'URL si besoin)
-
+  
 ## 1. Ajout de logs 
 - Ajouter des logs pour chaque appel à l'API
 - Ajouter des logs pour le début, la fin, la durée et les erreurs de l'import

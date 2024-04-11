@@ -38,7 +38,7 @@ Il faut:
 - lancer les migrations de la base de données
 
 ```bash
-cp .env.example .env
+cp .env .env
 docker compose pull
 docker compose build
 docker compose run --rm php composer install

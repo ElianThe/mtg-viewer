@@ -1,17 +1,32 @@
 <script setup>
-// TODO: La page de recheche de cartes.
+import { onMounted, ref } from 'vue';
+import {fetchCardBySearch} from "../services/cardService";
+
+const cards = ref([]);
+const loadingCard = ref(true);
+async function loadingCards () {
+  loadingCard.value = true;
+  cards.value = await fetchCardBySearch('car');
+  loadingCard.value = false;
+}
+
+onMounted( () => {
+  loadingCards();
+});
+
 </script>
 
 <template>
+  <div>
+    <h1>Toutes les cartes</h1>
+  </div>
+  <div class="card-list">
     <div>
-        <h1>Rechercher une Carte</h1>
+      <div class="card-result" v-for="card in cards" :key="card.id">
+        <router-link :to="{ name: 'get-card', params: { uuid: card.uuid } }">
+          {{ card.name }} <span>({{ card.uuid }})</span>
+        </router-link>
+      </div>
     </div>
-    <div class="card-list">
-        <div v-if="loadingCards">Loading...</div>
-        <div v-else>
-            <div class="card" v-for="card in cards" :key="card.id">
-                <router-link :to="{ name: 'get-card', params: { uuid: card.uuid } }"> {{ card.name }} - {{ card.uuid }} </router-link>
-            </div>
-        </div>
-    </div>
+  </div>
 </template>

@@ -26,6 +26,7 @@ class ApiCardController extends AbstractController
     public function cardAll(): Response
     {
         $cards = $this->entityManager->getRepository(Card::class)->findAll();
+        $this->logger->info('Une nouvelle requête sur la route /all a été éxécuté');
         return $this->json($cards);
     }
 
@@ -37,6 +38,25 @@ class ApiCardController extends AbstractController
     public function cardShow(string $uuid): Response
     {
         $card = $this->entityManager->getRepository(Card::class)->findOneBy(['uuid' => $uuid]);
+        $this->logger->info('Une nouvelle requête sur la route /{uuid} a été éxécuté');
+        if (!$card) {
+            return $this->json(['error' => 'Card not found'], 404);
+        }
+        return $this->json($card);
+    }
+
+    #[Route('/search/{name}', name:'Search card', methods: ['GET'])]
+    #[OA\Parameter(name: 'name', description: 'name of the card', in: 'path', required: true, schema: new OA\Schema(type: 'string'))]
+    #[OA\Put(description: 'Get cards by UUID')]
+    #[OA\Response(response: 200, description: 'Show card')]
+    #[OA\Response(response: 404, description: 'Card not found')]
+    public function cardBySearch(string $name) : Response
+    {
+        if (strlen($name) < 3) {
+            return $this->json(['error' => "Le mot n'est pas assez long"], 404);
+        }
+        $card = $this->entityManager->getRepository(Card::class)->getNameBySearch($name);
+        $this->logger->info('Une nouvelle requête sur la route /search/{uuid} a été éxécuté');
         if (!$card) {
             return $this->json(['error' => 'Card not found'], 404);
         }
