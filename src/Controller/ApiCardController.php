@@ -62,4 +62,60 @@ class ApiCardController extends AbstractController
         }
         return $this->json($card);
     }
+
+    /**
+     * @Route("/api/cards", methods={"GET"})
+     * @OA\Get(
+     *     path="/api/cards",
+     *     summary="List all cards with optional setCode filter",
+     *     @OA\Parameter(
+     *         name="setCode",
+     *         in="query",
+     *         description="The setCode to filter cards by",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Returns a list of cards",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Card"))
+     *     )
+     * )
+     */
+    public function listCards(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $setCode = $request->query->get('setCode');
+
+        $query = $this->getDoctrine()->getRepository(Card::class)->createQueryBuilder('c');
+
+        if ($setCode) {
+            $query->where('c.setCode = :setCode')->setParameter('setCode', $setCode);
+        }
+
+        $cards = $query->getQuery()->getResult();
+
+        return $this->json($cards);
+    }
+
+    /**
+     * @Route("/api/set-codes", methods={"GET"})
+     * @OA\Get(
+     *     path="/api/set-codes",
+     *     summary="List all available setCodes",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Returns a list of setCodes",
+     *         @OA\JsonContent(type="array", @OA\Items(type="string"))
+     *     )
+     * )
+     */
+    public function listSetCodes(): JsonResponse
+    {
+        $setCodes = $this->getDoctrine()->getRepository(Card::class)->createQueryBuilder('c')
+            ->select('DISTINCT c.setCode')
+            ->getQuery()
+            ->getResult();
+
+        return $this->json($setCodes);
+    }
 }
