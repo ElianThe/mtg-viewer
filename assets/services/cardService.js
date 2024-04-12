@@ -5,6 +5,14 @@ export async function fetchAllCards() {
     return result;
 }
 
+export async function fetchSetCodes() {
+    const response = await fetch('/api/set-codes');
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+}
+
 export async function fetchCard(uuid) {
     const response = await fetch(`/api/card/${uuid}`);
     if (response.status === 404) return null;
